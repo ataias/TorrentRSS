@@ -6,6 +6,10 @@
 //
 
 import Foundation
+import XCTest
+@testable import torrent_rss
+
+
 
 let rssFeed = """
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -38,4 +42,39 @@ tr=http://ataias-tracker.br:7777/announce</link>
 </rss>
 """
 
-rssFeed.write(toFile: "test.rss", atomically: true, encoding: String.Encoding.utf8)
+//rssFeed.write(toFile: "test.rss", atomically: true, encoding: String.Encoding.utf8)
+
+
+final class FeedTests: XCTestCase {
+    func testSingleTorrentItem() {
+        let singleItem = """
+        <item>
+        <title>Filename 1.something</title>
+        <link>magnet:?xt=urn:btih:RANDOMCODEHERE1&amp;\
+        tr=http://ataias-tracker.br:7777/announce</link>
+        <guid isPermaLink="false">RANDOMCODEHERE1</guid>
+        <pubDate>Wed, 22 Apr 2020 14:34:48 +0000</pubDate>
+        </item>
+        """
+        let torrentItem = TorrentItem(XMLString: singleItem)
+        XCTAssertEqual(torrentItem!.title, "Filename 1.something")
+    }
+
+    func testSingleTorrentItemPartial() {
+        // Link is missing, we will fail in this case
+        let singleItem = """
+        <item>
+        <title>Filename 1.something</title>
+        <guid isPermaLink="false">RANDOMCODEHERE1</guid>
+        <pubDate>Wed, 22 Apr 2020 14:34:48 +0000</pubDate>
+        </item>
+        """
+        let torrentItem = TorrentItem(XMLString: singleItem)
+        XCTAssertNil(torrentItem)
+    }
+
+
+    static var allTests = [
+        ("testSingleTorrentItem", testSingleTorrentItem),
+    ]
+}
