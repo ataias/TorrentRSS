@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Ataias Pereira Reis on 23/04/20.
 //
@@ -26,9 +26,15 @@ final class FeedTests: XCTestCase {
         <pubDate>Wed, 22 Apr 2020 14:34:48 +0000</pubDate>
         </item>
         """
-        let torrentItem = TorrentItem(XMLString: singleItem)
-        XCTAssertEqual(torrentItem!.title, "Filename 1.something")
-        XCTAssertEqual(torrentItem!.guid.value, "RANDOMCODEHERE1")
+        let torrentItem = TorrentItem(XMLString: singleItem)!
+        XCTAssertEqual(torrentItem.title, "Filename 1.something")
+
+        let dateFormatter = TorrentItem.dateFormatter
+        dateFormatter.timeZone = TimeZone(identifier: "UTC")
+        XCTAssertEqual(
+            dateFormatter.string(from: torrentItem.pubDate!),
+            "Wed, 22 Apr 2020 14:34:48 +0000")
+        XCTAssertEqual(torrentItem.guid.value, "RANDOMCODEHERE1")
     }
 
     func testSingleTorrentItemPartial() {
@@ -80,9 +86,9 @@ final class FeedTests: XCTestCase {
         XCTAssertEqual(feed!.title, "RSS Title")
         XCTAssertEqual(feed!.description, "A description of this feed")
         XCTAssertEqual(feed!.link, "http://www.ataias.com.br")
-        XCTAssertEqual(feed!.items!.count, 3)
-        XCTAssertEqual(feed!.items![0].title, "Filename 1.something")
-        XCTAssertEqual(feed!.items![0].guid.value, "RANDOMCODEHERE1")
+        XCTAssertEqual(feed!.items.count, 3)
+        XCTAssertEqual(feed!.items[0].title, "Filename 1.something")
+        XCTAssertEqual(feed!.items[0].guid.value, "RANDOMCODEHERE1")
         // TODO Add test for date
 
     }

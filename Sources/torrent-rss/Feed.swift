@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Ataias Pereira Reis on 23/04/20.
 //
@@ -29,6 +29,7 @@ struct Guid: XMLMappable {
         isPermalink <- map.attributes["isPermalink"]
     }
 }
+
 struct TorrentItem: XMLMappable {
     var nodeName: String!
 
@@ -45,27 +46,41 @@ struct TorrentItem: XMLMappable {
         }
     }
 
+
+    static var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss Z"
+        return formatter
+    }
+
     mutating func mapping(map: XMLMap) {
         title <- map["title"]
         link <- map["link"]
         guid <- map["guid"]
-        pubDate <- map["pubDate"]
+        pubDate <- (map["pubDate"],
+                    XMLDateFormatterTransform(
+                        dateFormatter: TorrentItem.dateFormatter))
     }
 }
 
 struct Feed: XMLMappable {
     var nodeName: String!
 
-    var title: String?
-    var description: String?
-    var link: String?
-    var items: [TorrentItem]?
+    var title: String!
+    var description: String!
+    var link: String!
+    var items: [TorrentItem]!
 
     init?(map: XMLMap) {
         // in our struct, we use "items", but the XML data has simply a
         // bunch of "item" elements, without an enclosing "items"
         // so we just check for the "item" existence below
-        for el in ["channel.title", "channel.description", "channel.link", "channel.item"] {
+        for el in [
+            "channel.title",
+            "channel.description",
+            "channel.link",
+            "channel.item"] {
             if !map[el].isKeyPresent {
                 return nil
             }
