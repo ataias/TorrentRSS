@@ -45,7 +45,7 @@ struct TorrentItem: XMLMappable {
     var nodeName: String!
 
     var title: String?
-    var link: String?
+    var link: URL?
     var guid: Guid!
     var pubDate: Date?
 
@@ -67,7 +67,7 @@ struct TorrentItem: XMLMappable {
 
     mutating func mapping(map: XMLMap) {
         title <- map["title"]
-        link <- map["link"]
+        link <- (map["link"], XMLURLTransform())
         guid <- map["guid"]
         pubDate <- (map["pubDate"],
                     XMLDateFormatterTransform(

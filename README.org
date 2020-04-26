@@ -1,0 +1,25 @@
+** Config
+You can create files in =~/.config/trss/feeds.yaml= and
+=~/.config/trss/server.yaml=
+*** Server
+#+BEGIN_SRC yaml
+  server: http://myserver.local:9091
+  secondsTimeout: 20
+#+END_SRC
+*** Feeds
+#+BEGIN_SRC yaml
+  - link: https://feed1.com/rss
+    include:
+      - Keyword1
+      - Keyword2
+  - link: https://feed2.com/rss
+    include:
+      - Keyword2
+      - Keyword3
+#+END_SRC
+
+
+** Run
+#+BEGIN_SRC sh
+  trss ~/.config/trss/server.yaml ~/.config/trss/feeds.yaml
+#+END_SRC

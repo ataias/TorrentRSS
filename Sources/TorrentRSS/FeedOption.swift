@@ -17,8 +17,7 @@ public struct FeedOption: Codable {
         let decoded = try? decoder.decode(FeedOption.self, from: yaml)
 
         if let d = decoded {
-            self.link = d.link
-            self.include = d.include
+            self = d
         } else {
             return nil
         }
