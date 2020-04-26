@@ -8,27 +8,38 @@
 import Foundation
 import XMLMapper
 
-//<item>
-//<title>Filename 1.something</title>
-//<link>magnet:?xt=urn:btih:RANDOMCODEHERE1&amp;\
-//tr=http://ataias-tracker.br:7777/announce</link>
-//<guid isPermaLink="false">RANDOMCODEHERE1</guid>
-//<pubDate>Wed, 22 Apr 2020 14:34:48 +0000</pubDate>
-//</item>
 
-struct Guid: XMLMappable {
+struct Feed: XMLMappable {
     var nodeName: String!
 
-    var value: String?
-    var isPermalink: Bool?
+    var title: String!
+    var description: String!
+    var link: String!
+    var items: [TorrentItem]!
 
-    init?(map: XMLMap) { }
+    init?(map: XMLMap) {
+        // in our struct, we use "items", but the XML data has simply a
+        // bunch of "item" elements, without an enclosing "items"
+        // so we just check for the "item" existence below
+        for el in [
+            "channel.title",
+            "channel.description",
+            "channel.link",
+            "channel.item"] {
+            if !map[el].isKeyPresent {
+                return nil
+            }
+        }
+    }
 
     mutating func mapping(map: XMLMap) {
-        value <- map.innerText
-        isPermalink <- map.attributes["isPermalink"]
+        title <- map["channel.title"]
+        description <- map["channel.description"]
+        link <- map["channel.link"]
+        items <- map["channel.item"]
     }
 }
+
 
 struct TorrentItem: XMLMappable {
     var nodeName: String!
@@ -64,33 +75,17 @@ struct TorrentItem: XMLMappable {
     }
 }
 
-struct Feed: XMLMappable {
+struct Guid: XMLMappable {
     var nodeName: String!
 
-    var title: String!
-    var description: String!
-    var link: String!
-    var items: [TorrentItem]!
+    var value: String?
+    var isPermalink: Bool?
 
-    init?(map: XMLMap) {
-        // in our struct, we use "items", but the XML data has simply a
-        // bunch of "item" elements, without an enclosing "items"
-        // so we just check for the "item" existence below
-        for el in [
-            "channel.title",
-            "channel.description",
-            "channel.link",
-            "channel.item"] {
-            if !map[el].isKeyPresent {
-                return nil
-            }
-        }
-    }
+    init?(map: XMLMap) { }
 
     mutating func mapping(map: XMLMap) {
-        title <- map["channel.title"]
-        description <- map["channel.description"]
-        link <- map["channel.link"]
-        items <- map["channel.item"]
+        value <- map.innerText
+        isPermalink <- map.attributes["isPermalink"]
     }
 }
+

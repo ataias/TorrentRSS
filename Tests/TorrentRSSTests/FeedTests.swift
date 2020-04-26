@@ -9,12 +9,6 @@ import Foundation
 import XCTest
 @testable import TorrentRSS
 
-
-
-
-//rssFeed.write(toFile: "test.rss", atomically: true, encoding: String.Encoding.utf8)
-
-
 final class FeedTests: XCTestCase {
     func testSingleTorrentItem() {
         let singleItem = """
@@ -89,7 +83,6 @@ final class FeedTests: XCTestCase {
         XCTAssertEqual(feed!.items.count, 3)
         XCTAssertEqual(feed!.items[0].title, "Filename 1.something")
         XCTAssertEqual(feed!.items[0].guid.value, "RANDOMCODEHERE1")
-        // TODO Add test for date
 
     }
 
