@@ -5,13 +5,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "torrent-rss",
+    name: "TorrentRSS",
     products: [
         // Products define the executables and libraries produced by a package,
         // and make them visible to other packages.
         .library(
-            name: "torrent-rss",
-            targets: ["torrent-rss"]),
+            name: "TorrentRSS",
+            targets: ["TorrentRSS"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -25,10 +25,10 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products
         // in packages which this package depends on.
         .target(
-            name: "torrent-rss",
+            name: "TorrentRSS",
             dependencies: ["XMLMapper"]),
         .testTarget(
-            name: "torrent-rssTests",
-            dependencies: ["torrent-rss"]),
+            name: "TorrentRSSTests",
+            dependencies: ["TorrentRSS"]),
     ]
 )

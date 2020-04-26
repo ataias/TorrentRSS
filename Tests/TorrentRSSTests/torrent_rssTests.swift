@@ -1,12 +1,12 @@
 import XCTest
-@testable import torrent_rss
+@testable import TorrentRSS
 
-final class torrent_rssTests: XCTestCase {
+final class TorrentRSSTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(torrent_rss().text, "Hello, World!")
+        XCTAssertEqual(TorrentRSS().text, "Hello, World!")
     }
 
     static var allTests = [

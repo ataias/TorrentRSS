@@ -1,7 +1,7 @@
 import XCTest
 
-import torrent_rssTests
+import TorrentRSSTests
 
 var tests = [XCTestCaseEntry]()
-tests += torrent_rssTests.allTests()
+tests += TorrentRSSTests.allTests()
 XCTMain(tests)

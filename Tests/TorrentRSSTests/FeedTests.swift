@@ -7,7 +7,7 @@
 
 import Foundation
 import XCTest
-@testable import torrent_rss
+@testable import TorrentRSS
 
 
 

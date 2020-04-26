@@ -1,3 +1,3 @@
-# torrent-rss
+# TorrentRSS
 
 A description of this package.

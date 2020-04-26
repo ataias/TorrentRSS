@@ -1,3 +1,3 @@
-struct torrent_rss {
+struct TorrentRSS {
     var text = "Hello, World!"
 }
