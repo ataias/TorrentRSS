@@ -18,6 +18,7 @@ let package = Package(
         .package(
             url: "https://github.com/gcharita/XMLMapper.git",
             from: "1.6.0"),
+        .package(url: "https://github.com/jpsim/Yams.git", from: "3.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can
@@ -26,7 +27,7 @@ let package = Package(
         // in packages which this package depends on.
         .target(
             name: "TorrentRSS",
-            dependencies: ["XMLMapper"]),
+            dependencies: ["XMLMapper", "Yams"]),
         .testTarget(
             name: "TorrentRSSTests",
             dependencies: ["TorrentRSS"]),

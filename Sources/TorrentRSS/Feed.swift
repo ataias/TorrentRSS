@@ -88,4 +88,3 @@ struct Guid: XMLMappable {
         isPermalink <- map.attributes["isPermalink"]
     }
 }
-
