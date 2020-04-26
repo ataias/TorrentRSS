@@ -28,21 +28,43 @@ func AssertNotNilAndUnwrap<T>(_ variable: T?, message: String = "Unexpected nil 
 }
 
 final class FeedOptionsTests: XCTestCase {
-    func testFeedOptionsDecoding() throws {
-        let yamlFeedOptions = """
+    func testSingleFeedOptionDecoding() throws {
+        let yamlFeedOption = """
         link: https://www.ataias.com.br
         include:
             - A
             - BC
             - K
         """
-        let feedOptionsOpt: FeedOptions? = FeedOptions(yaml: yamlFeedOptions)
-        let feedOptions = try AssertNotNilAndUnwrap(feedOptionsOpt)
-        XCTAssertEqual("\(feedOptions.link)", "https://www.ataias.com.br")
-        XCTAssertEqual(feedOptions.include, ["A", "BC", "K"])
+        let feedOptionOpt: FeedOption? = FeedOption(yaml: yamlFeedOption)
+        let feedOption = try AssertNotNilAndUnwrap(feedOptionOpt)
+        XCTAssertEqual("\(feedOption.link)", "https://www.ataias.com.br")
+        XCTAssertEqual(feedOption.include, ["A", "BC", "K"])
     }
 
+    func testMultiFeedOptionDecoding() throws {
+        let yamlFeedOptions = """
+        - link: https://www.ataias.com.br
+          include:
+            - A
+            - BC
+            - K
+        - link: https://google.com
+          include:
+            - googlo
+            - special
+        """
+        let feedOptionsOpt: [FeedOption]? = FeedOption.array(yaml: yamlFeedOptions)
+        let feedOptions = try AssertNotNilAndUnwrap(feedOptionsOpt)
+        XCTAssertEqual(feedOptions.count, 2)
+        XCTAssertEqual("\(feedOptions[0].link)", "https://www.ataias.com.br")
+        XCTAssertEqual(feedOptions[0].include, ["A", "BC", "K"])
+        XCTAssertEqual("\(feedOptions[1].link)", "https://google.com")
+        XCTAssertEqual(feedOptions[1].include, ["googlo", "special"])
+    }
+
+
     static var allTests = [
-        ("testFeedOptionsDecoding", testFeedOptionsDecoding),
+        ("testMultiFeedOptionDecoding", testMultiFeedOptionDecoding),
     ]
 }
