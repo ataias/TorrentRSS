@@ -9,15 +9,15 @@ import Foundation
 import XMLMapper
 
 
-struct Feed: XMLMappable {
-    var nodeName: String!
+public struct Feed: XMLMappable {
+    public var nodeName: String!
 
     var title: String!
     var description: String!
     var link: String!
     var items: [TorrentItem]!
 
-    init?(map: XMLMap) {
+    public init?(map: XMLMap) {
         // in our struct, we use "items", but the XML data has simply a
         // bunch of "item" elements, without an enclosing "items"
         // so we just check for the "item" existence below
@@ -32,7 +32,7 @@ struct Feed: XMLMappable {
         }
     }
 
-    mutating func mapping(map: XMLMap) {
+    public mutating func mapping(map: XMLMap) {
         title <- map["channel.title"]
         description <- map["channel.description"]
         link <- map["channel.link"]

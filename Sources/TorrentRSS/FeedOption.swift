@@ -8,7 +8,7 @@
 import Foundation
 import Yams
 
-struct FeedOption: Codable {
+public struct FeedOption: Codable {
     var link: URL
     var include: [String]
 
@@ -24,7 +24,7 @@ struct FeedOption: Codable {
         }
     }
 
-    static func array(yaml: String) -> [FeedOption]? {
+    public static func array(yaml: String) -> [FeedOption]? {
         let decoder = YAMLDecoder()
         let decoded = try? decoder.decode([FeedOption].self, from: yaml)
         return decoded
