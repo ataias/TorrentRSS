@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "Transmission",
+        "repositoryURL": "https://github.com/jameshurst/Transmission-Swift.git",
+        "state": {
+          "branch": null,
+          "revision": "28f50f2a7943351e6059dc95d3cb28a60e9c8607",
+          "version": "1.0.2"
+        }
+      },
+      {
         "package": "XMLMapper",
         "repositoryURL": "https://github.com/gcharita/XMLMapper.git",
         "state": {

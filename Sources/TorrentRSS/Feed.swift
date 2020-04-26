@@ -14,7 +14,7 @@ public struct Feed: XMLMappable {
 
     var title: String!
     var description: String!
-    var link: String!
+    var link: URL!
     var items: [TorrentItem]!
 
     public init?(map: XMLMap) {
@@ -35,7 +35,7 @@ public struct Feed: XMLMappable {
     public mutating func mapping(map: XMLMap) {
         title <- map["channel.title"]
         description <- map["channel.description"]
-        link <- map["channel.link"]
+        link <- (map["channel.link"], XMLURLTransform())
         items <- map["channel.item"]
     }
 }

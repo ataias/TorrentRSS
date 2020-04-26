@@ -79,7 +79,7 @@ final class FeedTests: XCTestCase {
         let feed = Feed(XMLString: rssFeed)
         XCTAssertEqual(feed!.title, "RSS Title")
         XCTAssertEqual(feed!.description, "A description of this feed")
-        XCTAssertEqual(feed!.link, "http://www.ataias.com.br")
+        XCTAssertEqual("\(feed!.link!)", "http://www.ataias.com.br")
         XCTAssertEqual(feed!.items.count, 3)
         XCTAssertEqual(feed!.items[0].title, "Filename 1.something")
         XCTAssertEqual(feed!.items[0].guid.value, "RANDOMCODEHERE1")

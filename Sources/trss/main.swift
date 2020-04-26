@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Ataias Pereira Reis on 26/04/20.
 //
@@ -16,5 +16,8 @@ if args.count != 2 {
     print("Given file: \(file)")
     let feedOptionsStr = try! String(contentsOfFile: file)
     let feedOptions = FeedOption.array(yaml: feedOptionsStr)
+    assert(feedOptions != nil, "Feed is nil")
+    let torrentRSSFeed = TorrentRSS(feedOptions!)
+    torrentRSSFeed.run()
     print(feedOptions ?? "error")
 }

@@ -6,6 +6,9 @@ import PackageDescription
 
 let package = Package(
     name: "TorrentRSS",
+    platforms: [
+        .macOS(.v10_15),
+    ],
     products: [
         // Products define the executables and libraries produced by a package,
         // and make them visible to other packages.
@@ -18,7 +21,13 @@ let package = Package(
         .package(
             url: "https://github.com/gcharita/XMLMapper.git",
             from: "1.6.0"),
-        .package(url: "https://github.com/jpsim/Yams.git", from: "3.0.0")
+        .package(
+            url: "https://github.com/jpsim/Yams.git",
+            from: "3.0.0"),
+        .package(
+            name: "Transmission",
+            url: "https://github.com/jameshurst/Transmission-Swift.git",
+            from: "1.0.2"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can
@@ -30,7 +39,7 @@ let package = Package(
             dependencies: ["TorrentRSS"]),
         .target(
             name: "TorrentRSS",
-            dependencies: ["XMLMapper", "Yams"]),
+            dependencies: ["XMLMapper", "Yams", "Transmission"]),
         .testTarget(
             name: "TorrentRSSTests",
             dependencies: ["TorrentRSS"]),
