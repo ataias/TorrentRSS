@@ -20,35 +20,33 @@ public struct TorrentRSS {
         var cancellables = Set<AnyCancellable>()
 
         for feedOption in feedOptions {
-            let rss = try! String(contentsOf: feedOption.link)
-            let feedOpt = Feed(XMLString: rss)
-            guard let feed = feedOpt else {
+            let rssXml = try! String(contentsOf: feedOption.link)
+            guard let rss: RSS = RSS.decode(rss: rssXml) else {
                 print("An error occurred while processing your feed")
                 exit(1)
             }
+            let feed = rss.channel
             let items = feed.items.filter {
-                $0.title?.containsAny(feedOption.include) ?? false
+                $0.title.containsAny(feedOption.include)
             }
 
             let group = DispatchGroup()
             for item in items {
-                assert(item.title != nil, "Item in feed has empty title")
-                assert(item.link != nil, "Item in feed does not have link")
 
-                let linkComponents = "\(item.link!)".components(separatedBy: "&")
+                let linkComponents = "\(item.link)".components(separatedBy: "&")
                 assert(linkComponents.count > 0, "Link seems wrong")
 
                 group.enter()
-                client.request(.add(url: item.link!))
+                client.request(.add(url: item.link))
                     .sink(receiveCompletion: { completion in
                         if case let .failure(error) = completion {
-                            print("[Failure] \(item.title!)")
+                            print("[Failure] \(item.title)")
                             print("[Failure] Details: \(error)")
 
                         }
                         group.leave()
                     }, receiveValue: { _ in
-                        print("[Success] \(item.title!)")
+                        print("[Success] \(item.title)")
                     })
                     .store(in: &cancellables)
             }

@@ -20,12 +20,12 @@
         }
       },
       {
-        "package": "XMLMapper",
-        "repositoryURL": "https://github.com/gcharita/XMLMapper.git",
+        "package": "XMLCoder",
+        "repositoryURL": "https://github.com/MaxDesiatov/XMLCoder.git",
         "state": {
           "branch": null,
-          "revision": "d433e4e7cbb1777e20355390253ff7fb268cc9ee",
-          "version": "1.6.1"
+          "revision": "590feacb7c486769bf0c0a654bd6bcd0e9c34fb9",
+          "version": "0.11.0"
         }
       },
       {

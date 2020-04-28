@@ -19,9 +19,6 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(
-            url: "https://github.com/gcharita/XMLMapper.git",
-            from: "1.6.0"),
-        .package(
             url: "https://github.com/jpsim/Yams.git",
             from: "3.0.0"),
         .package(
@@ -32,6 +29,7 @@ let package = Package(
             name: "GRDB",
             url: "https://github.com/groue/GRDB.swift.git",
             from: "4.14.0"),
+         .package(url: "https://github.com/MaxDesiatov/XMLCoder.git", from: "0.11.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can
@@ -43,7 +41,7 @@ let package = Package(
             dependencies: ["TorrentRSS"]),
         .target(
             name: "TorrentRSS",
-            dependencies: ["XMLMapper", "Yams", "Transmission", "GRDB"]),
+            dependencies: ["XMLCoder", "Yams", "Transmission", "GRDB"]),
         .testTarget(
             name: "TorrentRSSTests",
             dependencies: ["TorrentRSS"]),
