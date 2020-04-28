@@ -28,6 +28,10 @@ let package = Package(
             name: "Transmission",
             url: "https://github.com/jameshurst/Transmission-Swift.git",
             from: "1.0.2"),
+         .package(
+            name: "GRDB",
+            url: "https://github.com/groue/GRDB.swift.git",
+            from: "4.14.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can
@@ -39,7 +43,7 @@ let package = Package(
             dependencies: ["TorrentRSS"]),
         .target(
             name: "TorrentRSS",
-            dependencies: ["XMLMapper", "Yams", "Transmission"]),
+            dependencies: ["XMLMapper", "Yams", "Transmission", "GRDB"]),
         .testTarget(
             name: "TorrentRSSTests",
             dependencies: ["TorrentRSS"]),
