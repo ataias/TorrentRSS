@@ -7,6 +7,7 @@
 
 import Foundation
 import XMLCoder
+import GRDB
 
 public struct RSS: Codable {
     var channel: Channel
@@ -41,8 +42,9 @@ public struct Channel: Codable, DynamicNodeDecoding {
 }
 
 
-struct TorrentItem: Codable {
+struct TorrentItem: Codable, TableRecord, FetchableRecord, PersistableRecord {
 
+    var id: UInt64?
     var title: String
     var link: URL
     var guid: Guid
