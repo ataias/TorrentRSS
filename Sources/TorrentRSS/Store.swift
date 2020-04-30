@@ -11,19 +11,14 @@ import GRDB
 struct Store {
     var databaseQueue: DatabaseQueue
 
-    private func createTables(_ db: Database) throws {
-        try db.create(table: "torrentItem", ifNotExists: true) { t in
-            t.autoIncrementedPrimaryKey("id")
-            t.column("title", .text).notNull()
-            t.column("link", .text).notNull()
-            t.column("guid", .text).notNull()
-            t.column("pubDate", .datetime).notNull()
-        }
+    private func createTables(_ db: DatabaseWriter) throws {
+        let migrator = getMigrations()
+        try migrator.migrate(db)
     }
 
     func addTorrents(_ items: [TorrentItem]) throws {
+        try createTables(databaseQueue)
         try databaseQueue.write { db in
-            try createTables(db)
 
             for item in items {
                 let itemInDb: TorrentItem? =
