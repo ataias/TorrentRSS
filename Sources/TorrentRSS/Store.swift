@@ -16,7 +16,8 @@ struct Store {
         try migrator.migrate(db)
     }
 
-    func addTorrents(_ items: [TorrentItem]) throws {
+    func add(_ items: [TorrentItem]) throws {
+        // TODO Remove create tables from this method
         try createTables(databaseQueue)
         try databaseQueue.write { db in
 
@@ -34,5 +35,15 @@ struct Store {
             }
         }
 
+    }
+
+    func add(_ statuses: [TorrentItemStatus]) throws {
+        // TODO Remove create tables from this method
+        try createTables(databaseQueue)
+        try databaseQueue.write { db in
+            for status in statuses {
+                try status.insert(db)
+            }
+        }
     }
 }

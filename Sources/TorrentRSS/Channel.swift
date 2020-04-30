@@ -44,7 +44,9 @@ public struct Channel: Codable, DynamicNodeDecoding {
 
 struct TorrentItem: Codable, TableRecord, FetchableRecord, PersistableRecord {
 
-    var id: UInt64?
+    static let torrentItemStatuses = hasMany(TorrentItemStatus.self)
+
+    var id: Int?
     var title: String
     var link: URL
     var guid: Guid
@@ -55,6 +57,10 @@ struct TorrentItem: Codable, TableRecord, FetchableRecord, PersistableRecord {
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss Z"
         return formatter
+    }
+
+    var torrentItemStatuses: QueryInterfaceRequest<TorrentItemStatus> {
+        return request(for: TorrentItem.torrentItemStatuses)
     }
 }
 
@@ -78,4 +84,24 @@ struct Guid: Codable, DynamicNodeDecoding {
             }
     }
 
+}
+
+struct TorrentItemStatus: Codable, TableRecord, FetchableRecord, PersistableRecord {
+
+    static let torrentItem = belongsTo(TorrentItem.self)
+
+    var id: Int?
+    var torrentItemId: Int
+    var status: Status
+    var date: Date
+
+    var torrentItem: QueryInterfaceRequest<TorrentItem> {
+        return request(for: TorrentItemStatus.torrentItem)
+    }
+}
+
+enum Status: String, Codable {
+    case added // to be downloaded
+    case ignored // added for reference, no action
+    case downloaded // in system already
 }
