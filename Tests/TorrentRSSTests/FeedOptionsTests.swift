@@ -54,7 +54,8 @@ final class FeedOptionsTests: XCTestCase {
             - googlo
             - special
         """
-        let feedOptionsOpt: [FeedOption]? = FeedOption.array(yaml: yamlFeedOptions)
+        let feedOptionsOpt: [FeedOption]? = FeedOption.array(
+            yaml: yamlFeedOptions)
         let feedOptions = try AssertNotNilAndUnwrap(feedOptionsOpt)
         XCTAssertEqual(feedOptions.count, 2)
         XCTAssertEqual("\(feedOptions[0].link)", "https://www.ataias.com.br")
