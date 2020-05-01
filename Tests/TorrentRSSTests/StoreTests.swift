@@ -70,6 +70,7 @@ final class StoreTests: XCTestCase {
         XCTAssertNoThrow(try store.add(generate(n, with: .downloaded)))
         XCTAssertNoThrow(try store.add(generate(n, with: .ignored)))
 
+        // Test number of records and association from status to item
         try dbQueue.read { db in
             let dbItems = try TorrentItemStatus.fetchAll(db)
             XCTAssertEqual(dbItems.count, n * 3)
@@ -77,12 +78,15 @@ final class StoreTests: XCTestCase {
             XCTAssertEqual(try dbItems[0].torrentItem.fetchOne(db)!.id, 1)
         }
 
+        // Test association from item to statuses
         try dbQueue.read { db in
             let dbItems = try TorrentItem.fetchAll(db)
             XCTAssertEqual(dbItems.count, n)
             XCTAssertEqual(
                 try dbItems[0].torrentItemStatuses.fetchAll(db).count, 3)
         }
+
+        // TODO Test getting items with latest status downloaded
 
     }
 
