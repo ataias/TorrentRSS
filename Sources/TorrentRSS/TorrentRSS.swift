@@ -12,6 +12,8 @@ public struct TorrentRSS {
     }
 
     public func run() {
+
+        print("[INFO] \(Date())")
         let client = Transmission(
             baseURL: serverConfig.server,
             username: serverConfig.username,
@@ -84,4 +86,5 @@ public extension String {
     func expandingTildeInPath() -> String {
         return self.replacingOccurrences(of: "~", with: FileManager.default.homeDirectoryForCurrentUser.path)
     }
+
 }

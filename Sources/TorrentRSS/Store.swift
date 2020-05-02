@@ -42,8 +42,15 @@ struct Store {
                 }
             }
         }
-
     }
+
+    func addSeries(_ items: [TorrentItem]) throws {
+        try databaseQueue.write { db in
+            for item in items {
+                try Series(name: item.series).insert(db)
+                }
+            }
+        }
 
     func add(_ statuses: [TorrentItemStatus]) throws {
         try databaseQueue.write { db in

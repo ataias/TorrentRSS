@@ -19,12 +19,21 @@ func getMigrations() -> DatabaseMigrator {
             t.column("pubDate", .datetime).notNull()
         }
 
+        try db.create(table: "series", ifNotExists: true) { t in
+            t.autoIncrementedPrimaryKey("id")
+            t.column("name", .text).notNull()
+        }
+
         try db.create(table: "torrentItemStatus", ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id")
             t.column("torrentItemId", .integer)
                 .notNull()
                 .indexed()
                 .references("torrentItem", onDelete: .restrict)
+            t.column("seriesId", .integer)
+                .notNull()
+                .indexed()
+                .references("series", onDelete: .restrict)
             t.column("status", .text).notNull()
             t.column("date", .datetime).notNull()
         }
