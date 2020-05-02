@@ -98,5 +98,9 @@ final class FeedTests: XCTestCase {
 
     static var allTests = [
         ("testSingleTorrentItem", testSingleTorrentItem),
+        ("testGuid", testGuid),
+        ("testSingleTorrentItemPartial", testSingleTorrentItemPartial),
+        ("testFeed", testFeed),
+
     ]
 }
