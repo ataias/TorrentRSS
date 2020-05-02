@@ -37,5 +37,4 @@ if args.count != 3 {
 
     try torrentRSSFeed.fetchAndUpdateDB()
     try torrentRSSFeed.updateTransmission()
-    // TODO call transmission
 }

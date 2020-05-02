@@ -2,7 +2,6 @@ import Foundation
 import Combine
 import Transmission
 import GRDB
-import GRDBCombine
 
 public struct TorrentRSS {
     var serverConfig: Config
@@ -54,9 +53,6 @@ public struct TorrentRSS {
                 password: serverConfig.password)
 
             var cancellables = Set<AnyCancellable>()
-
-            // TODO Read items in database that need to be downloaded
-            // TODO change "items" below by the items read from the database
 
             let items = try store.getPending()
             print("[INFO] [\(Date())] Adding \(items.count) new items to transmission")
