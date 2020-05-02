@@ -11,14 +11,22 @@ import GRDB
 struct Store {
     var databaseQueue: DatabaseQueue
 
+    init?(databaseQueue: DatabaseQueue) {
+        self.databaseQueue = databaseQueue
+        do {
+            try createTables(databaseQueue)
+        } catch {
+            return nil
+        }
+
+    }
+
     private func createTables(_ db: DatabaseWriter) throws {
         let migrator = getMigrations()
         try migrator.migrate(db)
     }
 
     func add(_ items: [TorrentItem]) throws {
-        // TODO Remove create tables from this method
-        try createTables(databaseQueue)
         try databaseQueue.write { db in
 
             for item in items {
@@ -38,8 +46,6 @@ struct Store {
     }
 
     func add(_ statuses: [TorrentItemStatus]) throws {
-        // TODO Remove create tables from this method
-        try createTables(databaseQueue)
         try databaseQueue.write { db in
             for status in statuses {
                 try status.insert(db)
