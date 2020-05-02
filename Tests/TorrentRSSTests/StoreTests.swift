@@ -45,10 +45,11 @@ final class StoreTests: XCTestCase {
         }
     }
 
-    func generate(_ n: Int, with: Status) -> [TorrentItemStatus] {
+    func generate(_ n: Int, with: FileStatus) -> [TorrentItemStatus] {
         let statuses: [TorrentItemStatus] = (1...n).map {
             TorrentItemStatus (
                 torrentItemId: $0,
+                seriesId: 1, // TODO Should I improve that?
                 status: with,
                 date: Calendar.current.date(byAdding: .day,
                                             value: n - $0,
@@ -65,6 +66,7 @@ final class StoreTests: XCTestCase {
 
         let store = Store(databaseQueue: dbQueue)!
         XCTAssertNoThrow(try store.add(items))
+        XCTAssertNoThrow(try store.addSeries(items))
 
         XCTAssertNoThrow(try store.add(generate(n, with: .added)))
         XCTAssertNoThrow(try store.add(generate(n, with: .downloaded)))
@@ -93,9 +95,9 @@ final class StoreTests: XCTestCase {
             let dbItems = try TorrentItemStatus
                 .fetchAll(db,
                           sql: "SELECT * FROM torrentItemStatus WHERE status = ? ORDER BY date",
-                          arguments: [Status.downloaded.rawValue])
+                          arguments: [FileStatus.downloaded.rawValue])
             XCTAssertEqual(dbItems.count, n)
-            XCTAssert(dbItems[0].status == Status.downloaded)
+            XCTAssert(dbItems[0].status == FileStatus.downloaded)
         }
 
     }

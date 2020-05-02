@@ -62,6 +62,15 @@ struct TorrentItem: Codable, TableRecord, FetchableRecord, PersistableRecord {
     var torrentItemStatuses: QueryInterfaceRequest<TorrentItemStatus> {
         return request(for: TorrentItem.torrentItemStatuses)
     }
+
+    var series: String {
+        let s = self.title
+        let left = s.firstIndex(of: "]")
+        let right = s.lastIndex(of: "-")
+        let begin = left != nil ? s.index(left!, offsetBy: 1) : s.startIndex
+        let end = right != nil ? s.index(right!, offsetBy: -1) : s.endIndex
+        return s[begin..<end].trimmingCharacters(in: .whitespaces)
+    }
 }
 
 struct Guid: Codable, DynamicNodeDecoding {
@@ -89,18 +98,24 @@ struct Guid: Codable, DynamicNodeDecoding {
 struct TorrentItemStatus: Codable, TableRecord, FetchableRecord, PersistableRecord {
 
     static let torrentItem = belongsTo(TorrentItem.self)
+    static let series = belongsTo(Series.self)
 
     var id: Int?
     var torrentItemId: Int
-    var status: Status
+    var seriesId: Int
+    var status: FileStatus
     var date: Date
 
     var torrentItem: QueryInterfaceRequest<TorrentItem> {
         return request(for: TorrentItemStatus.torrentItem)
     }
+
+    var series: QueryInterfaceRequest<Series> {
+        return request(for: TorrentItemStatus.series)
+    }
 }
 
-enum Status: String, Codable {
+enum FileStatus: String, Codable {
     /// Item is added and should be downloaded
     case added
 
@@ -112,4 +127,9 @@ enum Status: String, Codable {
 
     /// Item previously downloaded, but deleted
     case deleted
+}
+
+struct Series: Codable, TableRecord, FetchableRecord, PersistableRecord {
+    var id: Int?
+    var name: String
 }

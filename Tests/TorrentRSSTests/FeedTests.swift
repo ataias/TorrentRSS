@@ -13,7 +13,7 @@ final class FeedTests: XCTestCase {
     func testSingleTorrentItem() {
         let singleItem = """
         <item>
-        <title>Filename 1.something</title>
+        <title>[PREFIX] Filename - 1.something</title>
         <link>magnet:?xt=urn:btih:RANDOMCODEHERE1&amp;\
         tr=http://ataias-tracker.br:7777/announce</link>
         <guid isPermaLink="false">RANDOMCODEHERE1</guid>
@@ -21,7 +21,8 @@ final class FeedTests: XCTestCase {
         </item>
         """
         let torrentItem: TorrentItem = RSS.decode(rss: singleItem)!
-        XCTAssertEqual(torrentItem.title, "Filename 1.something")
+        XCTAssertEqual(torrentItem.title, "[PREFIX] Filename - 1.something")
+        XCTAssertEqual(torrentItem.series, "Filename")
 
         let dateFormatter = TorrentItem.dateFormatter
         dateFormatter.timeZone = TimeZone(identifier: "UTC")
@@ -61,21 +62,21 @@ final class FeedTests: XCTestCase {
         <description>A description of this feed</description>
         <link>http://www.ataias.com.br</link>
         <item>
-        <title>Filename 1.something</title>
+        <title>[PA] Filename A - 1.something</title>
         <link>magnet:?xt=urn:btih:RANDOMCODEHERE1&amp;\
         tr=http://ataias-tracker.br:7777/announce</link>
         <guid isPermaLink="false">RANDOMCODEHERE1</guid>
         <pubDate>Wed, 22 Apr 2020 14:34:48 +0000</pubDate>
         </item>
         <item>
-        <title>Filename 2.something</title>
+        <title>[PA] Filename - 2.something</title>
         <link>magnet:?xt=urn:btih:RANDOMCODEHERE2&amp;\
         tr=http://ataias-tracker.br:7777/announce</link>
         <guid isPermaLink="false">RANDOMCODEHERE2</guid>
         <pubDate>Tue, 21 Apr 2020 14:34:48 +0000</pubDate>
         </item>
         <item>
-        <title>Filename 3.something</title>
+        <title>[PA] Filename - 3.something</title>
         <link>magnet:?xt=urn:btih:RANDOMCODEHERE3&amp;\
         tr=http://ataias-tracker.br:7777/announce</link>
         <guid isPermaLink="false">RANDOMCODEHERE3</guid>
@@ -91,7 +92,8 @@ final class FeedTests: XCTestCase {
         XCTAssertEqual(feed.description, "A description of this feed")
         XCTAssertEqual("\(feed.link)", "http://www.ataias.com.br")
         XCTAssertEqual(feed.items.count, 3)
-        XCTAssertEqual(feed.items[0].title, "Filename 1.something")
+        XCTAssertEqual(feed.items[0].title, "[PA] Filename A - 1.something")
+        XCTAssertEqual(feed.items[0].series, "Filename A")
         XCTAssertEqual(feed.items[0].guid.value, "RANDOMCODEHERE1")
     }
 
