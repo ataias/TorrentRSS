@@ -32,7 +32,7 @@ final class StoreTests: XCTestCase {
         let items = generate(items: 4)
         let dbQueue = DatabaseQueue()
 
-        let store = Store(databaseQueue: dbQueue)
+        let store = Store(databaseQueue: dbQueue)!
         XCTAssertNoThrow(try store.add(items))
         XCTAssertNoThrow(try store.add(items))
 
@@ -63,7 +63,7 @@ final class StoreTests: XCTestCase {
         let items = generate(items: n)
         let dbQueue = DatabaseQueue()
 
-        let store = Store(databaseQueue: dbQueue)
+        let store = Store(databaseQueue: dbQueue)!
         XCTAssertNoThrow(try store.add(items))
 
         XCTAssertNoThrow(try store.add(generate(n, with: .added)))

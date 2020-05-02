@@ -30,6 +30,12 @@ public struct TorrentRSS {
                 $0.title.containsAny(feedOption.include)
             }
 
+            // TODO Store items in database
+            // Should send whole feed.items
+            // feed.items that do not satisfy filter are added as ignored
+
+            // TODO Read items in database that need to be downloaded
+            // TODO change "items" below by the items read from the database
             let group = DispatchGroup()
             for item in items {
 
