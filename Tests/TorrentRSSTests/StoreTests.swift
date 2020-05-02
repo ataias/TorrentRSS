@@ -12,15 +12,15 @@ import GRDB
 
 final class StoreTests: XCTestCase {
 
-    func generate(items n: Int) -> [TorrentItem] {
+    func generate(items n: Int64) -> [TorrentItem] {
         let items: [TorrentItem] = (1...n).map {
             TorrentItem (
-                id: $0,
+//                id: $0,
                 title: "Title \($0).mkv",
                 link: URL(string: "http://server.com/title\($0).mkv")!,
                 guid: Guid(value: "GUID_\($0)", isPermaLink: false),
                 pubDate: Calendar.current.date(byAdding: .day,
-                                               value: n - $0,
+                                               value: Int(n - $0),
                                                to: Date())!
             )
         }
@@ -33,26 +33,29 @@ final class StoreTests: XCTestCase {
         let dbQueue = DatabaseQueue()
 
         let store = Store(databaseQueue: dbQueue)!
-        XCTAssertNoThrow(try store.add(items))
-        XCTAssertNoThrow(try store.add(items))
+        let addedItems = try store.add(items)
+        XCTAssertEqual(addedItems.count, n)
+        XCTAssertEqual(addedItems[0].id, 1)
+
+        let noItems = try store.add(items)
+        XCTAssertEqual(noItems.count, 0)
 
         try dbQueue.read { db in
-            let dbItems = try TorrentItem.fetchAll(db)
+            let dbItems = try TorrentItem
+                .order(Column("id"))
+                .fetchAll(db)
             XCTAssertEqual(dbItems.count, n)
-            for item in dbItems {
-                print("ID: \(item.id!)")
-            }
+            XCTAssertEqual(dbItems[0].id, 1)
         }
     }
 
-    func generate(_ n: Int, with: FileStatus) -> [TorrentItemStatus] {
+    func generate(_ n: Int64, with: FileStatus) -> [TorrentItemStatus] {
         let statuses: [TorrentItemStatus] = (1...n).map {
             TorrentItemStatus (
                 torrentItemId: $0,
-                seriesId: 1, // TODO Should I improve that?
                 status: with,
                 date: Calendar.current.date(byAdding: .day,
-                                            value: n - $0,
+                                            value: Int(n - $0),
                                             to: Date())!
             )
         }
@@ -60,13 +63,12 @@ final class StoreTests: XCTestCase {
     }
 
     func testAddStatuses() throws {
-        let n = 4
+        let n: Int64 = 4
         let items = generate(items: n)
         let dbQueue = DatabaseQueue()
 
         let store = Store(databaseQueue: dbQueue)!
         XCTAssertNoThrow(try store.add(items))
-        XCTAssertNoThrow(try store.addSeries(items))
 
         XCTAssertNoThrow(try store.add(generate(n, with: .added)))
         XCTAssertNoThrow(try store.add(generate(n, with: .downloaded)))
@@ -76,7 +78,7 @@ final class StoreTests: XCTestCase {
         // Test number of records and association from status to item
         try dbQueue.read { db in
             let dbItems = try TorrentItemStatus.fetchAll(db)
-            XCTAssertEqual(dbItems.count, n * 4)
+            XCTAssertEqual(dbItems.count, Int(n) * 4)
 
             XCTAssertEqual(try dbItems[0].torrentItem.fetchOne(db)!.id, 1)
         }
@@ -84,7 +86,7 @@ final class StoreTests: XCTestCase {
         // Test association from item to statuses
         try dbQueue.read { db in
             let dbItems = try TorrentItem.fetchAll(db)
-            XCTAssertEqual(dbItems.count, n)
+            XCTAssertEqual(dbItems.count, Int(n))
             XCTAssertEqual(
                 try dbItems[0].torrentItemStatuses.fetchAll(db).count, 4)
         }
@@ -93,10 +95,9 @@ final class StoreTests: XCTestCase {
         // TODO Avoid calling dbQueue here, use Store for that
         try dbQueue.read { db in
             let dbItems = try TorrentItemStatus
-                .fetchAll(db,
-                          sql: "SELECT * FROM torrentItemStatus WHERE status = ? ORDER BY date",
-                          arguments: [FileStatus.downloaded.rawValue])
-            XCTAssertEqual(dbItems.count, n)
+                .filter(Column("status") == FileStatus.downloaded.rawValue)
+                .fetchAll(db)
+            XCTAssertEqual(dbItems.count, Int(n))
             XCTAssert(dbItems[0].status == FileStatus.downloaded)
         }
 
