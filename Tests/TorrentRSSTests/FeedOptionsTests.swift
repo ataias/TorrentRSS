@@ -9,17 +9,13 @@ import Foundation
 import XCTest
 @testable import TorrentRSS
 
-let yamlFeedOptions = """
-link: https://www.ataias.com.br
-include:
-    - A
-    - BC
-    - K
-"""
-
 struct NilUnwrappingError: Error {}
 
-func AssertNotNilAndUnwrap<T>(_ variable: T?, message: String = "Unexpected nil variable", file: StaticString = #file, line: UInt = #line) throws -> T {
+func AssertNotNilAndUnwrap<T>(
+    _ variable: T?,
+    message: String = "Unexpected nil variable",
+    file: StaticString = #file,
+    line: UInt = #line) throws -> T {
     guard let variable = variable else {
         XCTFail(message, file: file, line: line)
         throw NilUnwrappingError()
@@ -66,6 +62,7 @@ final class FeedOptionsTests: XCTestCase {
 
 
     static var allTests = [
+        ("testSingleFeedOptionDecoding", testSingleFeedOptionDecoding),
         ("testMultiFeedOptionDecoding", testMultiFeedOptionDecoding),
     ]
 }

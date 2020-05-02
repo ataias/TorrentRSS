@@ -101,7 +101,15 @@ struct TorrentItemStatus: Codable, TableRecord, FetchableRecord, PersistableReco
 }
 
 enum Status: String, Codable {
-    case added // to be downloaded
-    case ignored // added for reference, no action
-    case downloaded // in system already
+    /// Item is added and should be downloaded
+    case added
+
+    /// Item info is stored, but no further action
+    case ignored
+
+    /// Item already in torrent program
+    case downloaded
+
+    /// Item previously downloaded, but deleted
+    case deleted
 }

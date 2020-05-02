@@ -69,11 +69,12 @@ final class StoreTests: XCTestCase {
         XCTAssertNoThrow(try store.add(generate(n, with: .added)))
         XCTAssertNoThrow(try store.add(generate(n, with: .downloaded)))
         XCTAssertNoThrow(try store.add(generate(n, with: .ignored)))
+        XCTAssertNoThrow(try store.add(generate(n, with: .deleted)))
 
         // Test number of records and association from status to item
         try dbQueue.read { db in
             let dbItems = try TorrentItemStatus.fetchAll(db)
-            XCTAssertEqual(dbItems.count, n * 3)
+            XCTAssertEqual(dbItems.count, n * 4)
 
             XCTAssertEqual(try dbItems[0].torrentItem.fetchOne(db)!.id, 1)
         }
@@ -83,10 +84,19 @@ final class StoreTests: XCTestCase {
             let dbItems = try TorrentItem.fetchAll(db)
             XCTAssertEqual(dbItems.count, n)
             XCTAssertEqual(
-                try dbItems[0].torrentItemStatuses.fetchAll(db).count, 3)
+                try dbItems[0].torrentItemStatuses.fetchAll(db).count, 4)
         }
 
-        // TODO Test getting items with latest status downloaded
+        // TODO Move these calls to the main code and then call it here
+        // TODO Avoid calling dbQueue here, use Store for that
+        try dbQueue.read { db in
+            let dbItems = try TorrentItemStatus
+                .fetchAll(db,
+                          sql: "SELECT * FROM torrentItemStatus WHERE status = ? ORDER BY date",
+                          arguments: [Status.downloaded.rawValue])
+            XCTAssertEqual(dbItems.count, n)
+            XCTAssert(dbItems[0].status == Status.downloaded)
+        }
 
     }
 
