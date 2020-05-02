@@ -1,25 +1,27 @@
 import Foundation
 import Combine
 import Transmission
+import GRDB
+import GRDBCombine
 
 public struct TorrentRSS {
     var serverConfig: Config
     var feedOptions: [FeedOption]
 
+//    var databaseQueue: [DatabaseQueue]
+    var store: Store
+
     public init(_ serverConfig: Config, _ feedOptions: [FeedOption]) {
         self.serverConfig = serverConfig
         self.feedOptions = feedOptions
+
+        let databaseQueue = try! DatabaseQueue(path: serverConfig.db.expandingTildeInPath())
+        self.store = Store(databaseQueue: databaseQueue)!
     }
 
-    public func run() {
+    public func fetchAndUpdateDB() throws {
 
-        print("[INFO] \(Date())")
-        let client = Transmission(
-            baseURL: serverConfig.server,
-            username: serverConfig.username,
-            password: serverConfig.password)
-
-        var cancellables = Set<AnyCancellable>()
+        print("[INFO] Updating DB - \(Date())")
 
         for feedOption in feedOptions {
             let rssXml = try! String(contentsOf: feedOption.link)
@@ -28,16 +30,37 @@ public struct TorrentRSS {
                 exit(1)
             }
             let feed = rss.channel
-            let items = feed.items.filter {
-                $0.title.containsAny(feedOption.include)
-            }
 
-            // TODO Store items in database
-            // Should send whole feed.items
-            // feed.items that do not satisfy filter are added as ignored
+            let addedItems = try store.add(feed.items)
+            let statuses = addedItems.map {
+                TorrentItemStatus(
+                    torrentItemId: $0.id!,
+                    status: $0.title.containsAny(feedOption.include)
+                        ? .added : .ignored,
+                    date: Date())
+            }
+            try store.add(statuses)
+        }
+
+    }
+
+    public func updateTransmission() throws {
+
+            print("[INFO] [\(Date())] Starting Transmission Update")
+
+            let client = Transmission(
+                baseURL: serverConfig.server,
+                username: serverConfig.username,
+                password: serverConfig.password)
+
+            var cancellables = Set<AnyCancellable>()
 
             // TODO Read items in database that need to be downloaded
             // TODO change "items" below by the items read from the database
+
+            let items = try store.getPending()
+            print("[INFO] [\(Date())] Adding \(items.count) new items to transmission")
+
             let group = DispatchGroup()
             for item in items {
 
@@ -55,6 +78,11 @@ public struct TorrentRSS {
                         group.leave()
                     }, receiveValue: { _ in
                         print("[Success] \(item.title)")
+                        do {
+                            try self.store.update(item: item, with: .downloaded)
+                        } catch {
+                            print("[Error] Couldn't save new status to DB")
+                        }
                     })
                     .store(in: &cancellables)
             }
@@ -70,7 +98,6 @@ public struct TorrentRSS {
                 exit(1)
             }
         }
-    }
 }
 
 public extension String {

@@ -42,11 +42,11 @@ public struct Channel: Codable, DynamicNodeDecoding {
 }
 
 
-struct TorrentItem: Codable, TableRecord, FetchableRecord, PersistableRecord {
+struct TorrentItem: Codable, TableRecord, FetchableRecord {
 
     static let torrentItemStatuses = hasMany(TorrentItemStatus.self)
 
-    var id: Int?
+    var id: Int64?
     var title: String
     var link: URL
     var guid: Guid
@@ -70,6 +70,12 @@ struct TorrentItem: Codable, TableRecord, FetchableRecord, PersistableRecord {
         let begin = left != nil ? s.index(left!, offsetBy: 1) : s.startIndex
         let end = right != nil ? s.index(right!, offsetBy: -1) : s.endIndex
         return s[begin..<end].trimmingCharacters(in: .whitespaces)
+    }
+}
+
+extension TorrentItem: MutablePersistableRecord {
+    mutating func didInsert(with rowID: Int64, for column: String?) {
+        id = rowID
     }
 }
 
@@ -100,9 +106,8 @@ struct TorrentItemStatus: Codable, TableRecord, FetchableRecord, PersistableReco
     static let torrentItem = belongsTo(TorrentItem.self)
     static let series = belongsTo(Series.self)
 
-    var id: Int?
-    var torrentItemId: Int
-    var seriesId: Int
+    var id: Int64?
+    var torrentItemId: Int64
     var status: FileStatus
     var date: Date
 
@@ -132,4 +137,18 @@ enum FileStatus: String, Codable {
 struct Series: Codable, TableRecord, FetchableRecord, PersistableRecord {
     var id: Int?
     var name: String
+}
+
+struct Episode: Codable, TableRecord, FetchableRecord, PersistableRecord {
+    var id: Int?
+    var seriesId: Int
+    var torrentItemId: Int
+    var episode: Int
+    var watchStatus: WatchStatus
+}
+
+enum WatchStatus: String, Codable {
+    case pending
+    case ignored
+    case watched
 }

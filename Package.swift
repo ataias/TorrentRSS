@@ -30,6 +30,7 @@ let package = Package(
             url: "https://github.com/groue/GRDB.swift.git",
             from: "4.14.0"),
          .package(url: "https://github.com/MaxDesiatov/XMLCoder.git", from: "0.11.0"),
+         .package(url: "https://github.com/groue/GRDBCombine.git", from: "0.8.1"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can
@@ -41,7 +42,7 @@ let package = Package(
             dependencies: ["TorrentRSS"]),
         .target(
             name: "TorrentRSS",
-            dependencies: ["XMLCoder", "Yams", "Transmission", "GRDB"]),
+            dependencies: ["XMLCoder", "Yams", "Transmission", "GRDB", "GRDBCombine"]),
         .testTarget(
             name: "TorrentRSSTests",
             dependencies: ["TorrentRSS"]),

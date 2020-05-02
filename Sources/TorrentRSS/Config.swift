@@ -10,6 +10,7 @@ import Yams
 
 public struct Config: Codable {
     var server: URL
+    var db: String
     var secondsTimeout: Int?
     var username: String?
     var password: String?

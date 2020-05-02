@@ -13,7 +13,7 @@ func getMigrations() -> DatabaseMigrator {
     migrator.registerMigration("v1") { db in
         try db.create(table: "torrentItem", ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id")
-            t.column("title", .text).notNull()
+            t.column("title", .text).notNull().unique()
             t.column("link", .text).notNull()
             t.column("guid", .text).notNull()
             t.column("pubDate", .datetime).notNull()
@@ -24,16 +24,29 @@ func getMigrations() -> DatabaseMigrator {
             t.column("name", .text).notNull()
         }
 
+        try db.create(table: "episodes", ifNotExists: true) { t in
+            t.autoIncrementedPrimaryKey("id")
+            t.column("seriesId", .integer)
+                .notNull()
+                .indexed()
+                .references("series", onDelete: .restrict)
+            t.column("torrentItemId", .integer)
+                .notNull()
+                .indexed()
+                .references("torrentItem", onDelete: .restrict)
+            t.column("episode", .integer)
+                .notNull()
+            t.column("watchStatus", .integer)
+                .notNull()
+
+        }
+
         try db.create(table: "torrentItemStatus", ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id")
             t.column("torrentItemId", .integer)
                 .notNull()
                 .indexed()
                 .references("torrentItem", onDelete: .restrict)
-            t.column("seriesId", .integer)
-                .notNull()
-                .indexed()
-                .references("series", onDelete: .restrict)
             t.column("status", .text).notNull()
             t.column("date", .datetime).notNull()
         }
