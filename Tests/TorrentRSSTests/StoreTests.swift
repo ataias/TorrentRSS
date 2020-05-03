@@ -15,7 +15,6 @@ final class StoreTests: XCTestCase {
     func generate(items n: Int64) -> [TorrentItem] {
         let items: [TorrentItem] = (1...n).map {
             TorrentItem (
-//                id: $0,
                 title: "Title \($0).mkv",
                 link: URL(string: "http://server.com/title\($0).mkv")!,
                 guid: Guid(value: "GUID_\($0)", isPermaLink: false),
@@ -49,13 +48,13 @@ final class StoreTests: XCTestCase {
         }
     }
 
-    func generate(_ n: Int64, with: FileStatus) -> [TorrentItemStatus] {
+    func generate(_ n: Int64, with: FileStatus, dateOffset: Int = 0) -> [TorrentItemStatus] {
         let statuses: [TorrentItemStatus] = (1...n).map {
             TorrentItemStatus (
                 torrentItemId: $0,
                 status: with,
                 date: Calendar.current.date(byAdding: .day,
-                                            value: Int(n - $0),
+                                            value: Int(n - $0) + dateOffset,
                                             to: Date())!
             )
         }
@@ -103,6 +102,22 @@ final class StoreTests: XCTestCase {
 
     }
 
+    func testFilterByLastStatus() throws {
+        let n: Int64 = 4
+        let items = generate(items: n * 2)
+        let dbQueue = DatabaseQueue()
+
+        let store = Store(databaseQueue: dbQueue)!
+        let _ = try store.add(items)
+
+        try store.add(generate(n * 2, with: .added))
+        try store.add(generate(n, with: .downloaded, dateOffset: 4))
+
+        let latestDownloaded = try store.filterTorrentItems(by: .downloaded)
+
+        XCTAssertEqual(latestDownloaded.count, Int(n))
+        XCTAssertEqual(latestDownloaded.map({$0.id!}).sorted(), Array(1...n))
+    }
 
     static var allTests = [
         ("testAddItems", testAddItems),

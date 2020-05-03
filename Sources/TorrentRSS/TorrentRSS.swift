@@ -54,7 +54,7 @@ public struct TorrentRSS {
 
             var cancellables = Set<AnyCancellable>()
 
-            let items = try store.getPending()
+            let items = try store.getPendingDownload()
             print("[INFO] [\(Date())] Adding \(items.count) new items to transmission")
 
             let group = DispatchGroup()
