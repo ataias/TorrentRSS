@@ -1,6 +1,30 @@
-** Config
-You can create files in =~/.config/trss/feeds.yaml= and
-=~/.config/trss/server.yaml=
+* TorrentRSS
+
+TorrentRSS is a command line written in Swift to monitor RSS feeds and add them
+automatically to transmission.
+
+The main purpose of this project is not downloading torrents though, but
+helping me learn Swift. Having a decent and functional solution code-wise is
+one of my priorities, but I haven't focused on improving usage by third
+parties, as I am the sole user at the moment. Feedback is welcome.
+
+** Similar Tools
+If you prefer to give another tool a try, [[https://github.com/nning/transmission-rss][transmission-rss]] seems an interesting
+candidate. It is written in ruby, so you can surely run it on a Linux box.
+
+** Some design decisions
+*** Feed Types
+Types are used for the feed type, which means you can't add any feed
+automatically without changing the source code for now.
+
+** Running
+   Some dependencies of this projects work only on macOS and iOS, like [[https://groue.github.io/GRDB.swift/][GRDB]] and
+   [[https://github.com/jameshurst/Transmission-Swift][Transmission-Swift]]. The instructions below are for running it on macOS. I
+   haven't tried nor adapted this code for iOS.
+
+*** Config
+ You can create files in =~/.config/trss/feeds.yaml= and
+ =~/.config/trss/server.yaml=
 *** Server
 #+BEGIN_SRC yaml
   server: http://myserver.local:9091
@@ -19,7 +43,17 @@ You can create files in =~/.config/trss/feeds.yaml= and
 #+END_SRC
 
 
-** Run
-#+BEGIN_SRC sh
-  trss ~/.config/trss/server.yaml ~/.config/trss/feeds.yaml
-#+END_SRC
+*** Run
+ #+BEGIN_SRC sh
+   trss ~/.config/trss/server.yaml ~/.config/trss/feeds.yaml
+ #+END_SRC
+
+** Future
+Here is a collection of ideas for future work, but I am not claiming to have
+committed to do anything.
+
+*** iOS
+- Menu to select config
+- UI Ignore or Add certain elements of the feed
+- No intention of having a torrent server on the iOS device, but using an
+  external server (which is my current setup FWIW)
