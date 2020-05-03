@@ -77,11 +77,11 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "~/.config/trss/server.yaml"
+            argument = "~/.config/trss-test/server.yaml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "~/.config/trss/feeds.yaml"
+            argument = "~/.config/trss-test/feeds.yaml"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
