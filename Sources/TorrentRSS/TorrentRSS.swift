@@ -6,8 +6,6 @@ import GRDB
 public struct TorrentRSS {
     var serverConfig: Config
     var feedOptions: [FeedOption]
-
-//    var databaseQueue: [DatabaseQueue]
     var store: Store
 
     public init(_ serverConfig: Config, _ feedOptions: [FeedOption]) {

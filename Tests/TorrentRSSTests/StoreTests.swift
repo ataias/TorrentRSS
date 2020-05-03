@@ -90,8 +90,6 @@ final class StoreTests: XCTestCase {
                 try dbItems[0].torrentItemStatuses.fetchAll(db).count, 4)
         }
 
-        // TODO Move these calls to the main code and then call it here
-        // TODO Avoid calling dbQueue here, use Store for that
         try dbQueue.read { db in
             let dbItems = try TorrentItemStatus
                 .filter(Column("status") == FileStatus.downloaded.rawValue)
@@ -122,5 +120,6 @@ final class StoreTests: XCTestCase {
     static var allTests = [
         ("testAddItems", testAddItems),
         ("testAddStatuses", testAddStatuses),
+        ("testFilterByLastStatus", testFilterByLastStatus)
     ]
 }
