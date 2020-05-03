@@ -22,7 +22,7 @@ final class FeedTests: XCTestCase {
         """
         let torrentItem: TorrentItem = RSS.decode(rss: singleItem)!
         XCTAssertEqual(torrentItem.title, "[PREFIX] Filename - 1.something")
-        XCTAssertEqual(torrentItem.series, "Filename")
+        XCTAssertEqual(torrentItem.seriesMetadata!.name, "Filename")
 
         let dateFormatter = TorrentItem.dateFormatter
         dateFormatter.timeZone = TimeZone(identifier: "UTC")
@@ -62,7 +62,7 @@ final class FeedTests: XCTestCase {
         <description>A description of this feed</description>
         <link>http://www.ataias.com.br</link>
         <item>
-        <title>[PA] Filename A - 1.something</title>
+        <title>[PA] Fil-, ename A - 1 [1080p].something</title>
         <link>magnet:?xt=urn:btih:RANDOMCODEHERE1&amp;\
         tr=http://ataias-tracker.br:7777/announce</link>
         <guid isPermaLink="false">RANDOMCODEHERE1</guid>
@@ -92,9 +92,14 @@ final class FeedTests: XCTestCase {
         XCTAssertEqual(feed.description, "A description of this feed")
         XCTAssertEqual("\(feed.link)", "http://www.ataias.com.br")
         XCTAssertEqual(feed.items.count, 3)
-        XCTAssertEqual(feed.items[0].title, "[PA] Filename A - 1.something")
-        XCTAssertEqual(feed.items[0].series, "Filename A")
+        XCTAssertEqual(
+            feed.items[0].title,
+            "[PA] Fil-, ename A - 1 [1080p].something")
+        XCTAssertEqual(feed.items[0].seriesMetadata!.name, "Fil-, ename A")
+        XCTAssertEqual(feed.items[0].seriesMetadata!.episode, 1)
         XCTAssertEqual(feed.items[0].guid.value, "RANDOMCODEHERE1")
+
+        XCTAssertEqual(feed.items[1].seriesMetadata!.episode, 2)
     }
 
 

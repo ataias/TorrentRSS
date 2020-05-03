@@ -63,14 +63,28 @@ struct TorrentItem: Codable, TableRecord, FetchableRecord {
         return request(for: TorrentItem.torrentItemStatuses)
     }
 
-    var series: String {
-        let s = self.title
-        let left = s.firstIndex(of: "]")
-        let right = s.lastIndex(of: "-")
-        let begin = left != nil ? s.index(left!, offsetBy: 1) : s.startIndex
-        let end = right != nil ? s.index(right!, offsetBy: -1) : s.endIndex
-        return s[begin..<end].trimmingCharacters(in: .whitespaces)
+    var seriesMetadata: SeriesMetadata? {
+        let pattern = "^\\[.*\\]\\s+(?<series>.+)\\s+-\\s+(?<episode>\\d+)"
+        let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+
+        guard let match = regex?.firstMatch(in: title, options: [], range: NSRange(location: 0, length: title.utf16.count)) else {
+            return nil
+        }
+
+        let seriesRange = Range(match.range(withName: "series"), in: title)!
+        let seriesName = String(title[seriesRange])
+
+        let episodeRange = Range(match.range(withName: "episode"), in: title)!
+        let episodeNumber = Int(String(title[episodeRange]))!
+
+
+        return SeriesMetadata(name: seriesName, episode: episodeNumber)
     }
+}
+
+struct SeriesMetadata {
+    var name: String
+    var episode: Int
 }
 
 extension TorrentItem: MutablePersistableRecord {

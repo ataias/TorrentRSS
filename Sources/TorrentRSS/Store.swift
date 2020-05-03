@@ -54,10 +54,10 @@ public struct Store {
             for item in items {
                 let seriesInDb: Series? =
                     try Series
-                        .filter(Column("name") == item.series)
+                        .filter(Column("name") == item.seriesMetadata!.name)
                         .fetchOne(db)
                 if seriesInDb == nil {
-                    try Series(name: item.series).insert(db)
+                    try Series(name: item.seriesMetadata!.name).insert(db)
                 }
             }
         }
