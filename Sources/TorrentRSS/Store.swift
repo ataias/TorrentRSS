@@ -71,9 +71,8 @@ public struct Store {
         }
     }
 
-    func getPending() throws -> [TorrentItem] {
+    func filterTorrentItems(by: FileStatus) throws -> [TorrentItem] {
         try databaseQueue.write { db in
-            // For all ids, get only the status row with the latest date...
             let sql = """
             SELECT torrentItemStatus.*, max(date) AS date
             FROM torrentItemStatus
@@ -81,10 +80,14 @@ public struct Store {
             """
             let statuses = try TorrentItemStatus
                 .fetchAll(db, sql: sql)
-                .filter { $0.status == .added }
+                .filter { $0.status == by }
 
             return try statuses.map { try $0.torrentItem.fetchOne(db)! }
         }
+    }
+
+    func getPendingDownload() throws -> [TorrentItem] {
+        return try filterTorrentItems(by: .added)
     }
 
     func update(item: TorrentItem, with: FileStatus) throws {
