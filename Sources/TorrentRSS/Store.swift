@@ -74,15 +74,19 @@ public struct Store {
     func filterTorrentItems(by: FileStatus) throws -> [TorrentItem] {
         try databaseQueue.write { db in
             let sql = """
-            SELECT torrentItemStatus.*, max(date) AS date
-            FROM torrentItemStatus
-            GROUP BY torrentItemId
+            SELECT * FROM torrentItem WHERE id IN (
+                SELECT torrentItemId from (
+                    SELECT torrentItemStatus.*, max(date) AS date
+                    FROM torrentItemStatus
+                    GROUP BY torrentItemId
+                    HAVING status = "\(by.rawValue)"
+                )
+            )
             """
-            let statuses = try TorrentItemStatus
+            let items = try TorrentItem
                 .fetchAll(db, sql: sql)
-                .filter { $0.status == by }
 
-            return try statuses.map { try $0.torrentItem.fetchOne(db)! }
+            return items
         }
     }
 
