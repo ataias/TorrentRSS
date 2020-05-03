@@ -32,6 +32,21 @@ final class TorrentRSSTests: XCTestCase {
         XCTAssertNil(serverOptions.password)
     }
 
+    func testExpandingPath() throws {
+        let serverOptionsStr = "~/.config/"
+        let expansion = "\(FileManager.default.homeDirectoryForCurrentUser.path)/.config/"
+        XCTAssertEqual(expansion, serverOptionsStr.expandingTildeInPath())
+    }
+
+    func testContainsAny() throws {
+        let options = ["Super", "Extra", "Wow"]
+        XCTAssertTrue("Duper Super".containsAny(options))
+        XCTAssertTrue("Extra Duper".containsAny(options))
+        XCTAssertTrue("Wow wow".containsAny(options))
+        XCTAssertFalse("wow wow".containsAny(options))
+        XCTAssertFalse("XY extra wow".containsAny(options))
+    }
+
     static var allTests = [
         ("testFullServerConfig", testFullServerConfig),
         ("testPartialConfig", testPartialConfig),

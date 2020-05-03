@@ -14,14 +14,14 @@ public struct Store {
     init?(databaseQueue: DatabaseQueue) {
         self.databaseQueue = databaseQueue
         do {
-            try createTables(databaseQueue)
+            try setupDatabase(databaseQueue)
         } catch {
             return nil
         }
 
     }
 
-    private func createTables(_ db: DatabaseWriter) throws {
+    private func setupDatabase(_ db: DatabaseWriter) throws {
         let migrator = getMigrations()
         try migrator.migrate(db)
     }
@@ -53,9 +53,9 @@ public struct Store {
         try databaseQueue.write { db in
             for item in items {
                 let seriesInDb: Series? =
-                try Series
-                    .filter(Column("name") == item.series)
-                    .fetchOne(db)
+                    try Series
+                        .filter(Column("name") == item.series)
+                        .fetchOne(db)
                 if seriesInDb == nil {
                     try Series(name: item.series).insert(db)
                 }
@@ -65,9 +65,7 @@ public struct Store {
 
     func add(_ statuses: [TorrentItemStatus]) throws {
         try databaseQueue.write { db in
-            for status in statuses {
-                try status.insert(db)
-            }
+            try statuses.forEach { try $0.insert(db) }
         }
     }
 
