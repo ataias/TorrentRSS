@@ -33,8 +33,6 @@ if args.count != 3 {
     assert(feedOptions != nil, "Feed is nil")
 
     let torrentRSSFeed = TorrentRSS(serverOptions!, feedOptions!)
-
-
     try torrentRSSFeed.fetchAndUpdateDB()
     try torrentRSSFeed.updateTransmission()
 }

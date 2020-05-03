@@ -50,5 +50,7 @@ final class TorrentRSSTests: XCTestCase {
     static var allTests = [
         ("testFullServerConfig", testFullServerConfig),
         ("testPartialConfig", testPartialConfig),
+        ("testExpandingPath", testExpandingPath),
+        ("testContainsAny", testContainsAny),
     ]
 }
