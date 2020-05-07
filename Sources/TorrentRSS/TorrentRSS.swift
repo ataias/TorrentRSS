@@ -53,9 +53,10 @@ public struct TorrentRSS {
         group.enter()
         print("[INFO] Connecting to client")
         client.request(.rpcVersion)
-            .sink(receiveCompletion: { _ in }, receiveValue: { rpcVersion in
-                print("[INFO]: Successfully Connected! RPC Version: \(rpcVersion)")
-                group.leave()
+            .sink(
+                receiveCompletion: { _ in group.leave() },
+                receiveValue: { rpcVersion in
+                    print("[INFO]: Successfully Connected! RPC Version: \(rpcVersion)")
             })
             .store(in: &cancellables)
         let wallTimeout = DispatchWallTime.now() +
