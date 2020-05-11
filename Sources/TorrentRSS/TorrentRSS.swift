@@ -63,6 +63,10 @@ public struct TorrentRSS {
             DispatchTimeInterval.seconds(serverConfig.secondsTimeout ?? 15)
         let res = group.wait(wallTimeout: wallTimeout)
 
+        for cancellable in cancellables {
+            cancellable.cancel()
+        }
+
         if res == DispatchTimeoutResult.success {
             return client
         } else {
@@ -117,6 +121,11 @@ public struct TorrentRSS {
         let wallTimeout = DispatchWallTime.now() +
             DispatchTimeInterval.seconds(serverConfig.secondsTimeout ?? 15)
         let res = group.wait(wallTimeout: wallTimeout)
+
+        for cancellable in cancellables {
+            cancellable.cancel()
+        }
+
         if res == DispatchTimeoutResult.success {
             print("Tasks successfully submitted")
         } else {

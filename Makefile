@@ -32,6 +32,11 @@ install: $(RELEASE_BIN)
 install_debug: $(DEBUG_BIN)
 	cp $(DEBUG_BIN) $(PREFIX)
 
+.PHONY: clean
+clean:
+	rm -f $(RELEASE_BIN)
+	rm -f $(DEBUG_BIN)
+
 # .PHONY: debug
 # debug: $(BIN)
 # 	lldb -s debug.lldb $(BIN)
