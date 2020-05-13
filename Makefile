@@ -1,4 +1,5 @@
 SOURCES = $(wildcard Sources/**/*.swift)
+TESTS = $(wildcard Tests/**/*.swift)
 BUILD = $(shell swift build --show-bin-path -c release)
 DBUILD = $(shell swift build --show-bin-path -c debug)
 TARGET=trss
@@ -36,6 +37,10 @@ install_debug: $(DEBUG_BIN)
 clean:
 	rm -f $(RELEASE_BIN)
 	rm -f $(DEBUG_BIN)
+
+test: $(SOURCES) $(TESTS)
+	swift test
+	touch .test
 
 # .PHONY: debug
 # debug: $(BIN)

@@ -15,7 +15,7 @@ final class StoreTests: XCTestCase {
     func generate(items n: Int64) -> [TorrentItem] {
         let items: [TorrentItem] = (1...n).map {
             TorrentItem (
-                title: "Title \($0).mkv",
+                title: "[prefix suffix] Title - \($0).mkv",
                 link: URL(string: "http://server.com/title\($0).mkv")!,
                 guid: Guid(value: "GUID_\($0)", isPermaLink: false),
                 pubDate: Calendar.current.date(byAdding: .day,
@@ -45,6 +45,16 @@ final class StoreTests: XCTestCase {
                 .fetchAll(db)
             XCTAssertEqual(dbItems.count, n)
             XCTAssertEqual(dbItems[0].id, 1)
+        }
+
+        try dbQueue.read { db in
+            let dbItems = try Series
+              .order(Column("id"))
+              .fetchAll(db)
+            // All start by "Title", so that's the only series
+            XCTAssertEqual(dbItems.count, 1)
+            XCTAssertEqual(dbItems[0].id, 1)
+            XCTAssertEqual(dbItems[0].name, "Title")
         }
     }
 

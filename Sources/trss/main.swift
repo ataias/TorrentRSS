@@ -34,5 +34,5 @@ if args.count != 3 {
 
     let torrentRSSFeed = TorrentRSS(serverOptions!, feedOptions!)
     try torrentRSSFeed.fetchAndUpdateDB()
-    try torrentRSSFeed.updateTransmission()
+    try torrentRSSFeed.updatePendingDownload()
 }

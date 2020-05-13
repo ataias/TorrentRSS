@@ -45,6 +45,10 @@ public struct Store {
             }
         }
         print("[Store] [\(Date())] \(added.count) items added to database")
+
+        try self.addSeries(items)
+        print("[Store] [\(Date())] Successfully added series")
+
         return added
 
     }
