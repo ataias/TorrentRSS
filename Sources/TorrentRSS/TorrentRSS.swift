@@ -76,8 +76,9 @@ public struct TorrentRSS {
     }
 
     public func initializeSeries() throws {
-        print("[INFO] [\(Date())] Starting Transmission Update")
+        try store.initializeSeries()
     }
+
     public func updatePendingDownload() throws {
 
         print("[INFO] [\(Date())] Starting Transmission Update")

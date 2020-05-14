@@ -45,3 +45,7 @@ test: $(SOURCES) $(TESTS)
 # .PHONY: debug
 # debug: $(BIN)
 # 	lldb -s debug.lldb $(BIN)
+
+.PHONY: run-debug
+run-debug: $(DEBUG_BIN)
+	$(DEBUG_BIN) ~/.config/trss-test/server.yaml ~/.config/trss-test/feeds.yaml

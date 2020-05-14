@@ -19,7 +19,6 @@ func getMigrations() -> DatabaseMigrator {
             t.column("pubDate", .datetime).notNull()
         }
 
-        // TODO Add method to automatically add series based on TorrentItem
         try db.create(table: "series", ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id")
             t.column("name", .text).notNull()
