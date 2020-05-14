@@ -44,6 +44,7 @@ public struct Store {
                 }
             }
         }
+
         print("[Store] [\(Date())] \(added.count) items added to database")
 
         try self.addSeries(items)
@@ -64,6 +65,23 @@ public struct Store {
                     try Series(name: item.seriesMetadata!.name).insert(db)
                 }
             }
+        }
+    }
+
+    public func initializeSeries() throws {
+        var itemsToAdd: [TorrentItem]? = nil
+
+        try databaseQueue.read { db in
+            let dbItems = try Series
+              .order(Column("id"))
+              .fetchAll(db)
+            if dbItems.count == 0 {
+              itemsToAdd = try TorrentItem.fetchAll(db)
+            }
+        }
+
+        if let items = itemsToAdd {
+            try self.addSeries(items)
         }
     }
 
