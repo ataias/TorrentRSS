@@ -37,14 +37,11 @@ install_debug: $(DEBUG_BIN)
 clean:
 	rm -f $(RELEASE_BIN)
 	rm -f $(DEBUG_BIN)
+	rm -f test
 
 test: $(SOURCES) $(TESTS)
 	swift test
-	touch .test
-
-# .PHONY: debug
-# debug: $(BIN)
-# 	lldb -s debug.lldb $(BIN)
+	touch test
 
 .PHONY: run-debug
 run-debug: $(DEBUG_BIN)
