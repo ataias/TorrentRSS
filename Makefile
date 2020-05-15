@@ -49,3 +49,7 @@ test: $(SOURCES) $(TESTS)
 .PHONY: run-debug
 run-debug: $(DEBUG_BIN)
 	$(DEBUG_BIN) ~/.config/trss-test/server.yaml ~/.config/trss-test/feeds.yaml
+
+.PHONY: run
+run: $(RELEASE_BIN)
+	$(RELEASE_BIN) ~/.config/trss-test/server.yaml ~/.config/trss-test/feeds.yaml

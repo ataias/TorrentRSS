@@ -154,9 +154,9 @@ struct Series: Codable, TableRecord, FetchableRecord, PersistableRecord {
 }
 
 struct Episode: Codable, TableRecord, FetchableRecord, PersistableRecord {
-    var id: Int?
+    var id: Int64?
     var seriesId: Int
-    var torrentItemId: Int
+    var torrentItemId: Int64
     var episode: Int
     var watchStatus: WatchStatus
 }
@@ -165,4 +165,8 @@ enum WatchStatus: String, Codable {
     case pending
     case ignored
     case watched
+}
+
+enum TRSSError: Error {
+    case noId
 }

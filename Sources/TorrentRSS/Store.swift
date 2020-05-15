@@ -28,6 +28,9 @@ public struct Store {
 
     func add(_ items: [TorrentItem]) throws -> [TorrentItem] {
 
+        try self.addSeries(items)
+        print("[Store] [\(Date())] Successfully added series")
+
         var added: [TorrentItem] = []
 
         try databaseQueue.write { db in
@@ -41,14 +44,13 @@ public struct Store {
                     try item.insert(db)
                     added.append(item)
                     print("[Store] Added item \(item.id ?? 0) to db")
+                    try self.addEpisode(item: item, db: db)
+                    print("[Store] Successfully added episode for item \(item.id ?? 0) to db")
                 }
             }
         }
 
         print("[Store] [\(Date())] \(added.count) items added to database")
-
-        try self.addSeries(items)
-        print("[Store] [\(Date())] Successfully added series")
 
         return added
 
@@ -83,6 +85,61 @@ public struct Store {
         if let items = itemsToAdd {
             try self.addSeries(items)
         }
+    }
+
+    public func initializeEpisodes() throws {
+        var itemsToAdd: [TorrentItem]? = nil
+
+        try databaseQueue.read { db in
+            let dbItems = try Episode
+              .order(Column("id"))
+              .fetchAll(db)
+            if dbItems.count == 0 {
+                itemsToAdd = try TorrentItem.fetchAll(db)
+            }
+        }
+
+        if let items = itemsToAdd {
+            try self.addEpisodes(items)
+            print("[INFO] [\(Date())] Added \(items.count) episodes")
+        }
+    }
+
+    private func addEpisodes(_ items: [TorrentItem]) throws {
+        try self.addSeries(items)
+
+        try databaseQueue.write { db in
+            for item in items {
+                let series: Series =
+                  try Series
+                  .filter(Column("name") == item.seriesMetadata!.name)
+                  .fetchOne(db)!
+                let episode = Episode(
+                  seriesId: series.id!,
+                  torrentItemId: item.id!,
+                  episode: item.seriesMetadata!.episode,
+                  watchStatus: .pending
+                )
+                try episode.insert(db)
+            }
+        }
+    }
+
+    private func addEpisode(item: TorrentItem, db: Database) throws {
+        guard item.id != nil else {
+            throw TRSSError.noId
+        }
+        let series: Series =
+          try Series
+          .filter(Column("name") == item.seriesMetadata!.name)
+          .fetchOne(db)!
+        let episode = Episode(
+          seriesId: series.id!,
+          torrentItemId: item.id!,
+          episode: item.seriesMetadata!.episode,
+          watchStatus: .pending
+        )
+        try episode.insert(db)
     }
 
     func add(_ statuses: [TorrentItemStatus]) throws {

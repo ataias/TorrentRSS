@@ -79,6 +79,10 @@ public struct TorrentRSS {
         try store.initializeSeries()
     }
 
+    public func initializeEpisodes() throws {
+        try store.initializeEpisodes()
+    }
+
     public func updatePendingDownload() throws {
 
         print("[INFO] [\(Date())] Starting Transmission Update")

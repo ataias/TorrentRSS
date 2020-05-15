@@ -24,7 +24,6 @@ func getMigrations() -> DatabaseMigrator {
             t.column("name", .text).notNull()
         }
 
-        // TODO Add method to automatically add episodes based on torrent item
         try db.create(table: "episodes", ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id")
             t.column("seriesId", .integer)
@@ -51,6 +50,11 @@ func getMigrations() -> DatabaseMigrator {
             t.column("status", .text).notNull()
             t.column("date", .datetime).notNull()
         }
+    }
+
+    migrator.registerMigration("v2") { db in
+        try db.rename(table: "episodes", to: "episode")
+
     }
 
     return migrator;

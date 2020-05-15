@@ -34,13 +34,20 @@ final class StoreTests: XCTestCase {
         }
 
         try dbQueue.read { db in
-            let dbItems = try Series
+            let series = try Series
               .order(Column("id"))
               .fetchAll(db)
             // All start by "Title", so that's the only series
-            XCTAssertEqual(dbItems.count, 1)
-            XCTAssertEqual(dbItems[0].id, 1)
-            XCTAssertEqual(dbItems[0].name, "Title")
+            XCTAssertEqual(series.count, 1)
+            XCTAssertEqual(series[0].id, 1)
+            XCTAssertEqual(series[0].name, "Title")
+
+            let episodes = try Episode
+              .order(Column("id"))
+              .fetchAll(db)
+            XCTAssertEqual(episodes.count, n)
+            XCTAssertEqual(episodes[0].episode, 1)
+            XCTAssertEqual(episodes[2].episode, 3)
         }
     }
 
@@ -99,6 +106,61 @@ final class StoreTests: XCTestCase {
             XCTAssertEqual(series[1].name, "Even Another Title")
             XCTAssertEqual(series[2].name, "Sweet")
             XCTAssertEqual(series[3].name, "Sweet and Sour")
+        }
+    }
+
+
+    func testInitializeEpisodes() throws {
+        let items =
+          generate(items: 5, series: "Another Title") +
+          generate(items: 3, series: "Even Another Title") +
+          generate(items: 2, series: "Sweet") +
+          generate(items: 1, series: "Sweet and Sour")
+
+        let dbQueue = DatabaseQueue()
+
+        let store = Store(databaseQueue: dbQueue)!
+        try dbQueue.write { db in
+            for var item in items {
+              try item.insert(db);
+            }
+        }
+
+        try dbQueue.read { db in
+            let dbItems = try Episode
+              .fetchAll(db)
+            // we haven't initialized yet
+            XCTAssertEqual(dbItems.count, 0)
+        }
+
+        try store.initializeEpisodes()
+
+        try dbQueue.read { db in
+            let episodes = try Episode
+              .order(Column("id"))
+              .fetchAll(db)
+            XCTAssertEqual(episodes.count, 11)
+
+            XCTAssertEqual(episodes[0].seriesId, 1)
+            XCTAssertEqual(episodes[5].seriesId, 2)
+            XCTAssertEqual(episodes[8].seriesId, 3)
+            XCTAssertEqual(episodes[10].seriesId, 4)
+
+            XCTAssertEqual(episodes[0].torrentItemId, 1)
+            XCTAssertEqual(episodes[5].torrentItemId, 6)
+            XCTAssertEqual(episodes[8].torrentItemId, 9)
+            XCTAssertEqual(episodes[10].torrentItemId, 11)
+
+            XCTAssertEqual(episodes[0].episode, 1)
+            XCTAssertEqual(episodes[6].episode, 2)
+            XCTAssertEqual(episodes[8].episode, 1)
+            XCTAssertEqual(episodes[10].episode, 1)
+
+            XCTAssertEqual(episodes[0].watchStatus, .pending)
+            XCTAssertEqual(episodes[6].watchStatus, .pending)
+            XCTAssertEqual(episodes[8].watchStatus, .pending)
+            XCTAssertEqual(episodes[10].watchStatus, .pending)
+
         }
     }
 
