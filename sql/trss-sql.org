@@ -1,0 +1,51 @@
+* Queries
+** Schema
+#+name: show-schema
+#+BEGIN_SRC sqlite :db ~/.config/trss-test/trss.db :results raw
+.schema
+#+END_SRC
+
+#+name: show-tables
+#+BEGIN_SRC sqlite :db ~/.config/trss-test/trss.db :results raw
+.tables
+#+END_SRC
+
+
+** Torrent Item
+#+BEGIN_SRC sqlite :db ~/.config/trss-test/trss.db :colnames yes
+select id, title, pubDate from torrentItem;
+#+END_SRC
+** torrentItemStatus
+#+BEGIN_SRC sqlite :db ~/.config/trss-test/trss.db :colnames yes
+  select * from torrentItemStatus;
+#+END_SRC
+
+#+name: torrentItemStatus
+
+
+*** Update table
+#+begin_src sqlite :db ~/.config/trss-test/trss.db :var status=torrentItemStatus
+create temporary table updates (id, torrentItemId, status, date);
+.mode csv updates
+.import $status updates
+update torrentItemStatus set status = (select status from updates
+where torrentItemStatus.id = updates.id)
+where exists (select * from updates where updates.id = torrentItemStatus.id);
+#+end_src
+** series
+#+BEGIN_SRC sqlite :db ~/.config/trss-test/trss.db :colnames yes
+  select * from series;
+#+END_SRC
+** episodes
+#+BEGIN_SRC sqlite :db ~/.config/trss-test/trss.db :colnames yes
+  select * from episodes;
+#+END_SRC
+** series and episodes
+#+BEGIN_SRC sqlite :db ~/.config/trss-test/trss.db :colnames yes
+  select
+    episode.id, name, seriesId, episode, watchStatus
+    from series
+           left join episode
+               on series.id = episode.seriesId
+   order by name, episode
+ #+END_SRC
