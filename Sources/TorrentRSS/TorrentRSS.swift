@@ -1,5 +1,9 @@
 import Foundation
+#if os(Linux)
+import OpenCombine
+#else
 import Combine
+#endif
 import Transmission
 import GRDB
 

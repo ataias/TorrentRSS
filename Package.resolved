@@ -3,20 +3,29 @@
     "pins": [
       {
         "package": "GRDB",
-        "repositoryURL": "https://github.com/groue/GRDB.swift.git",
+        "repositoryURL": "https://github.com/ataias/GRDB.swift.git",
+        "state": {
+          "branch": "develop",
+          "revision": "132f485b905bfe0f58732664b374a6b94730f529",
+          "version": null
+        }
+      },
+      {
+        "package": "OpenCombine",
+        "repositoryURL": "https://github.com/broadwaylamb/OpenCombine.git",
         "state": {
           "branch": null,
-          "revision": "5ee47c3c2765bdfde0f44c2ea9a263f6aa252d63",
-          "version": "4.14.0"
+          "revision": "1496bab2724bf6f794cba8ac4d97d2a5013eeba7",
+          "version": "0.8.0"
         }
       },
       {
         "package": "Transmission",
-        "repositoryURL": "https://github.com/jameshurst/Transmission-Swift.git",
+        "repositoryURL": "https://github.com/ataias/Transmission-Swift.git",
         "state": {
           "branch": null,
-          "revision": "28f50f2a7943351e6059dc95d3cb28a60e9c8607",
-          "version": "1.0.2"
+          "revision": "fd0920c44aa8d2eb991343a844bf36de0fae19b7",
+          "version": "1.0.4-beta"
         }
       },
       {

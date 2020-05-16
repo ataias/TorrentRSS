@@ -23,13 +23,14 @@ let package = Package(
             from: "3.0.0"),
         .package(
             name: "Transmission",
-            url: "https://github.com/jameshurst/Transmission-Swift.git",
-            from: "1.0.2"),
+            url: "https://github.com/ataias/Transmission-Swift.git",
+            from: "1.0.4-beta"),
          .package(
             name: "GRDB",
-            url: "https://github.com/groue/GRDB.swift.git",
-            from: "4.14.0"),
+            url: "https://github.com/ataias/GRDB.swift.git",
+            .branch("develop")),
          .package(url: "https://github.com/MaxDesiatov/XMLCoder.git", from: "0.11.0"),
+         .package(url: "https://github.com/broadwaylamb/OpenCombine.git", from: "0.8.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can
@@ -38,7 +39,7 @@ let package = Package(
         // in packages which this package depends on.
         .target(
             name: "trss",
-            dependencies: ["TorrentRSS"]),
+            dependencies: ["TorrentRSS", "OpenCombine"]),
         .target(
             name: "TorrentRSS",
             dependencies: ["XMLCoder", "Yams", "Transmission", "GRDB"]),
