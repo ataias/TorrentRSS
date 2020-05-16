@@ -3,5 +3,6 @@ import XCTest
 import TorrentRSSTests
 
 var tests = [XCTestCaseEntry]()
-tests += TorrentRSSTests.allTests()
+tests += TorrentRSSTests.__allTests()
+
 XCTMain(tests)
